@@ -1,0 +1,6 @@
+version: '3.3'
+services:
+  python-unimed:
+    restart: always
+    container_name: python-unimed
+    image: python-unimed
