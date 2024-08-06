@@ -35,8 +35,16 @@ def extractComprovante():
             im = rpa.to_image(resolution=300)
             im2 = rpa2.to_image(resolution=300)
             
-            im.save(f"./assets/comprovantes/{nameOfFirstFile}.png", format="PNG")
-            im2.save(f"./assets/comprovantes/{nameOfSecondFile}.png", format="PNG")
+            if os.path.isfile(f"./assets/comprovantes/{nameOfFirstFile}.png"):
+                im.save(f"./assets/comprovantes/{nameOfFirstFile}-{i}.png", format="PNG")
+            else:    
+                im.save(f"./assets/comprovantes/{nameOfFirstFile}.png", format="PNG")
+            
+            if os.path.isfile(f"./assets/comprovantes/{nameOfSecondFile}.png"):
+                im2.save(f"./assets/comprovantes/{nameOfSecondFile}-{i}.png", format="PNG")
+            else:
+                im2.save(f"./assets/comprovantes/{nameOfSecondFile}.png", format="PNG")
+
     
     return True
 

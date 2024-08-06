@@ -18,8 +18,11 @@ def extractRpa():
             rpa = page.within_bbox((left, top, right, bottom))
             
             im = rpa.to_image(resolution=300)
-            
-            im.save(f"./assets/rpa/{name}.png", format="PNG")
+
+            if os.path.isfile(f"./assets/rpa/{name}.png"):
+                im.save(f"./assets/comprovantes/{name}-{i}.png", format="PNG")
+            else:
+                im.save(f"./assets/rpa/{name}.png", format="PNG")
     
     return True
 
