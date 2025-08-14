@@ -1,4 +1,5 @@
 import pdfplumber, os, glob
+from PyPDF2 import PdfWriter, PdfReader
 
 def extractComprovante():
     
@@ -6,44 +7,33 @@ def extractComprovante():
     files = glob.glob('./assets/comprovantes/*')
     for f in files:
         os.remove(f)
+        
+    inputPDFFile = PdfReader(open(rf'./pdf/comprovantes.pdf', "rb"))
+    
 
     with pdfplumber.open('./pdf/comprovantes.pdf') as pdf:
         for i, page in enumerate(pdf.pages):
             
-            top = 0
-            bottom = page.height / 3.4
-            left = 0
-            right = page.width
+            output = PdfWriter()
+            output.add_page(inputPDFFile.pages[i])
             
-            rpa = page.within_bbox((left, top, right, bottom))
-            firstText = page.crop((left, top, right, bottom)).extract_text()
-            splitFirstText = firstText.splitlines()        
-            matchesFirstText = [match for match in splitFirstText if "Conta:" in match] 
+            pdfText = page.extract_text()
+            splitFirstText = pdfText.splitlines()        
+            matchesFirstText = [match for match in splitFirstText if "Conta:" in match]
+            
+            fileName = ''
+            
             if(len(matchesFirstText)):
-                nameOfFirstFile = matchesFirstText[1].split('/')[1]
-
-            top = page.height / 3.4
-            bottom = page.height
-
-            rpa2 = page.within_bbox((left, top, right, bottom))
-            secondText = page.crop((left, top, right, bottom)).extract_text()
-            splitSecondText = secondText.splitlines()
-            matchesSecondText = [match for match in splitSecondText if "Conta:" in match]
-            if(len(matchesSecondText)):
-                nameOfSecondFile = matchesSecondText[1].split('/')[1]
-            
-            im = rpa.to_image(resolution=300)
-            im2 = rpa2.to_image(resolution=300)
-            
-            if os.path.isfile(f"./assets/comprovantes/{nameOfFirstFile}.png"):
-                im.save(f"./assets/comprovantes/{nameOfFirstFile}-{i}.png", format="PNG")
+                name = matchesFirstText[1].split('/')[1]
+                
+                fileName = name
+                
+            if os.path.isfile(f"./assets/comprovantes/{fileName}.pdf"):
+                with open(f"./assets/comprovantes/%s-%s.pdf" % (fileName, i), "wb") as outputStream:
+                    output.write(outputStream)
             else:    
-                im.save(f"./assets/comprovantes/{nameOfFirstFile}.png", format="PNG")
-            
-            if os.path.isfile(f"./assets/comprovantes/{nameOfSecondFile}.png"):
-                im2.save(f"./assets/comprovantes/{nameOfSecondFile}-{i}.png", format="PNG")
-            else:
-                im2.save(f"./assets/comprovantes/{nameOfSecondFile}.png", format="PNG")
+                with open(f"./assets/comprovantes/%s.pdf" % fileName, "wb") as outputStream:
+                    output.write(outputStream)
 
     
     return True

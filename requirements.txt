@@ -1,3 +1,4 @@
 pyTelegramBotAPI
 pdfplumber
 python-dotenv
+PyPDF2
