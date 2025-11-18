@@ -18,22 +18,24 @@ def extractComprovante():
             output.add_page(inputPDFFile.pages[i])
             
             pdfText = page.extract_text()
-            splitFirstText = pdfText.splitlines()        
+            splitFirstText = pdfText.splitlines()
+            
             matchesFirstText = [match for match in splitFirstText if "Conta:" in match]
             
             fileName = ''
             
-            if(len(matchesFirstText)):
+            if(len(matchesFirstText) > 1):
                 name = matchesFirstText[1].split('/')[1]
                 
                 fileName = name
-                
-            if os.path.isfile(f"./assets/comprovantes/{fileName}.pdf"):
-                with open(f"./assets/comprovantes/%s-%s.pdf" % (fileName, i), "wb") as outputStream:
-                    output.write(outputStream)
-            else:    
-                with open(f"./assets/comprovantes/%s.pdf" % fileName, "wb") as outputStream:
-                    output.write(outputStream)
+            
+            if(fileName != ''):
+                if os.path.isfile(f"./assets/comprovantes/{fileName}.pdf"):
+                    with open(f"./assets/comprovantes/%s-%s.pdf" % (fileName, i), "wb") as outputStream:
+                        output.write(outputStream)
+                else:    
+                    with open(f"./assets/comprovantes/%s.pdf" % fileName, "wb") as outputStream:
+                        output.write(outputStream)
 
     
     return True
