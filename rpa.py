@@ -1,4 +1,4 @@
-import pdfplumber, os, glob
+import pdfplumber, os, glob, re
 
 def extractRpa():
     files = glob.glob('./assets/rpa/*')
@@ -6,12 +6,17 @@ def extractRpa():
         os.remove(f)
     with pdfplumber.open('./pdf/rpa.pdf') as pdf:
         for i, page in enumerate(pdf.pages):
-            listOfNames = page.extract_table()[8]
-            dirtNames = listOfNames[0].split('INSS')
-            name = dirtNames[0].split(':')[1].replace('\n','').replace('Nº','')
+            listOfNames = page.extract_table()[1]
+            dirtNames = listOfNames[0].split('\n')
+            
+            arrayOfNames = dirtNames[1].split(' ')            
+            
+            list = arrayOfNames[1:-3]
+            
+            name = ' '.join(list)            
             
             top = 0
-            bottom = page.height / 1.7
+            bottom = page.height / 2.3
             left = 0
             right = page.width
             
